@@ -1,6 +1,6 @@
 {
 	"name": "@neokit-dev/r2",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
@@ -54,6 +54,6 @@
 	},
 	"dependencies": {
 		"@neokit-dev/buckets": "^2.0.0",
-		"@neokit-dev/core": "^3.0.0"
+		"@neokit-dev/core": "^3.1.0"
 	}
 }

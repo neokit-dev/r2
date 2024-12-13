@@ -46,9 +46,9 @@ export function plugin(options: R2PluginOptions): Plugin {
 		apiVersion,
     requires,
 		plugin: new R2Plugin(options),
+    onLoaded: () => inject(bid, options.bucketsNamespace ?? bns, p.plugin),
 		...defaultPluginOptions(options, { namespace: defaultNamespace })
 	};
-  inject(bid, options.bucketsNamespace ?? bns, p.plugin);
   return p;
 }
 
