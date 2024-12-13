@@ -1,13 +1,13 @@
-import { access, defaultPluginOptions, type Plugin, type PluginOptions } from '@neokit-dev/core';
+import { access, defaultPluginOptions, type Plugin, type PluginOptions, inject } from '@neokit-dev/core';
 import { defaultNamespace as bns, id as bid, BucketsPlugin } from '@neokit-dev/buckets';
 import type { R2Bucket } from '@cloudflare/workers-types';
 
 export const id = 'dev.neokit.r2';
 export const defaultNamespace = `${bns}-r2`;
-export const apiVersion = 2;
-export const version = 1;
+export const apiVersion = 3;
+export const version = 2;
 export const requires = {
-	[bid]: [1, 1]
+	[bid]: [2, 2]
 };
 
 export class R2Plugin extends BucketsPlugin {
@@ -36,34 +36,38 @@ export class R2Plugin extends BucketsPlugin {
 
 export interface R2PluginOptions extends PluginOptions {
 	bucket: R2Bucket;
+  bucketsNamespace?: string;
 }
 
 export function plugin(options: R2PluginOptions): Plugin {
-	return {
+	const p = {
 		id,
 		version,
 		apiVersion,
+    requires,
 		plugin: new R2Plugin(options),
 		...defaultPluginOptions(options, { namespace: defaultNamespace })
 	};
+  inject(bid, options.bucketsNamespace ?? bns, p.plugin);
+  return p;
 }
 
 export function metadata(path: string) {
-  return namespace(defaultNamespace).metadata(path);
+  return namespace(bns).metadata(path);
 }
 
 export function download(path: string) {
-  return namespace(defaultNamespace).download(path);
+  return namespace(bns).download(path);
 }
 
 export function upload(path: string, data: ArrayBuffer) {
-  return namespace(defaultNamespace).upload(path, data);
+  return namespace(bns).upload(path, data);
 }
 
 export function remove(path: string) {
-  return namespace(defaultNamespace).remove(path);
+  return namespace(bns).remove(path);
 }
 
 export function namespace(namespace: string): R2Plugin {
-  return access(id)[namespace].plugin as R2Plugin;
+  return access(bid)[namespace].plugin as R2Plugin;
 }
